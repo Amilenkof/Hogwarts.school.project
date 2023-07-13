@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
 import java.util.Map;
+
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
@@ -23,11 +24,10 @@ public class FacultyController {
 
     @PostMapping
     public ResponseEntity<Faculty> create(@RequestBody Faculty faculty) {
-        if (faculty != null) {
-            facultyService.create(faculty);
-            return ResponseEntity.ok(faculty);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        var result = facultyService.create(faculty);
+        return result != null ?
+                ResponseEntity.ok(faculty) :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @GetMapping("{id}")
@@ -51,14 +51,18 @@ public class FacultyController {
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> delete(@PathVariable Long id) {
         Faculty faculty = facultyService.delete(id);
-        return faculty != null ? ResponseEntity.ok(faculty) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return faculty != null ?
+                ResponseEntity.ok(faculty) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
     @GetMapping("/getall")
-    public Map<Long,Faculty> getAll (){
+    public Map<Long, Faculty> getAll() {
         return facultyService.getAll();
     }
+
     @GetMapping("/color")
-    public Collection<Faculty> findForAge(@RequestParam ("color") String color ){
+    public Collection<Faculty> findForAge(@RequestParam("color") String color) {
         return facultyService.findForColor(color);
     }
 }
