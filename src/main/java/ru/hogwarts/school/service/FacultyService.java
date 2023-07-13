@@ -51,4 +51,11 @@ public class FacultyService {
                 .filter(faculty -> faculty.getColor().equals(color))
                 .toList();
     }
+
+    @Override
+    public String toString() {
+        return "FacultyService{" +
+               "repository=" + repository +
+               '}';
+    }
 }

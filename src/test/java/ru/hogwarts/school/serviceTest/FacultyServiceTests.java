@@ -16,6 +16,20 @@ public class FacultyServiceTests {
     private final FacultyService facultyService = new FacultyService();
     private final Faculty facultyGriffindor = new Faculty(1L, "Griffindor", "Red");
     private final Faculty facultySlizerin = new Faculty(1L, "Slizerin", "Green");
+    @Test
+    public void readMethodTests() {
+        //test2 negative
+        var actual = (facultyService.read(10005000L));
+        assertThat(actual == null);
+
+        //test1 positive
+        var res=facultyService.create(facultyGriffindor);
+        assertThat((facultyService.read(2L)).equals(facultyGriffindor));
+
+
+
+
+    }
 
     @Test
     public void createMethodTests() {
@@ -34,29 +48,18 @@ public class FacultyServiceTests {
         assertThat(facultyService.getAll().size() == 1);
     }
 
-    @Test
-    public void readMethodTests() {
-        //test1 positive
-        facultyService.create(facultyGriffindor);
-        var actual = facultyService.read(1L);
-        assertThat(actual.equals(facultyGriffindor));
 
-        //test2 negative
-        actual = facultyService.read(10005000L);
-        assertThat(actual == null);
-    }
 
     @Test
     public void deleteMethodTests() {
         //test1 negative
-        var actual = facultyService.delete(100005000L);
-        assertThat(actual == null);
+        assertThat((facultyService.delete(100005000L)) == null);
 
 
         //test2 positive
         facultyService.create(facultyGriffindor);
-        actual = facultyService.delete(1L);
-        assertThat(actual.equals(facultyGriffindor));
+
+        assertThat((facultyService.delete(3L)).equals(facultyGriffindor));
 
         //test3 positive size
         facultyService.create(facultyGriffindor);
@@ -83,11 +86,7 @@ public class FacultyServiceTests {
         //test3 negative-return null if updated wrong faculty
         assertThat(actual == null);
     }
-//    public Collection<Faculty> findForColor(String color) {
-//        return repository.values().stream()
-//                .filter(faculty -> faculty.getColor().equals(color))
-//                .toList();
-//    }
+
 
     @Test
     public void findForColorTests(){
