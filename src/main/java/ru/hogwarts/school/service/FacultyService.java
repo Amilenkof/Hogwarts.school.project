@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Faculty;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 @Service
 @Scope("singleton")
 public class FacultyService {
@@ -20,10 +21,13 @@ public class FacultyService {
     }
 
     public Faculty create(Faculty faculty) {
-        counter++;
-        faculty.setId(counter);
-        return repository.put(counter, faculty);
-
+        if (faculty != null) {
+            counter++;
+            faculty.setId(counter);
+            repository.put(counter, faculty);
+            return faculty;
+        }
+        return null;
     }
 
     public Faculty read(Long id) {
@@ -37,10 +41,12 @@ public class FacultyService {
     public Faculty delete(Long id) {
         return repository.remove(id);
     }
-    public Map<Long,Faculty> getAll(){
+
+    public Map<Long, Faculty> getAll() {
         return repository;
     }
-    public Collection<Faculty> findForColor(String color){
+
+    public Collection<Faculty> findForColor(String color) {
         return repository.values().stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .toList();
