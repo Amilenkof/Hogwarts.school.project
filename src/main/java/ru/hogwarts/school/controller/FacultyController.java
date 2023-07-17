@@ -5,11 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
@@ -31,9 +32,9 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> read(@PathVariable Long id) {
-        Faculty faculty = facultyService.read(id);
-        if (faculty != null) {
+    public ResponseEntity<Optional<Faculty>> read(@PathVariable Long id) {
+        Optional<Faculty> faculty = facultyService.read(id);
+        if (faculty.isPresent()) {
             return ResponseEntity.ok(faculty);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -50,11 +51,15 @@ public class FacultyController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> delete(@PathVariable Long id) {
-        Faculty faculty = facultyService.delete(id);
-        return faculty != null ? ResponseEntity.ok(faculty) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            facultyService.delete(id);
+        } catch (IllegalArgumentException e) {
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/getall")
-    public Map<Long,Faculty> getAll (){
+    public List<Faculty> getAll (){
         return facultyService.getAll();
     }
     @GetMapping("/color")
