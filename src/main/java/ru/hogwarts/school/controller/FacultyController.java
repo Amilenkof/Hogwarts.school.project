@@ -51,12 +51,13 @@ public class FacultyController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> delete(@PathVariable Long id) {
+        Faculty faculty = facultyService.read(id).get();
         try {
             facultyService.delete(id);
         } catch (IllegalArgumentException e) {
          return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(faculty);
     }
     @GetMapping("/getall")
     public List<Faculty> getAll (){

@@ -1,15 +1,15 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
-import java.net.http.HttpRequest;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("student")
 @RestController
@@ -32,10 +32,10 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Student> read(@PathVariable Long id) {
-        Student student = studentService.read(id);
-        if (student != null) {
-            return ResponseEntity.ok(student);
+    public ResponseEntity<Optional<Student>> read(@PathVariable Long id) {
+        Optional<Student> result = studentService.read(id);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -48,19 +48,34 @@ public class StudentController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+//        @DeleteMapping("{id}")
+//    public ResponseEntity<Faculty> delete(@PathVariable Long id) {
+//        try {
+//            facultyService.delete(id);
+//        } catch (IllegalArgumentException e) {
+//         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        return ResponseEntity.ok().build();
+//    }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Student> delete(@PathVariable Long id) {
-        Student student = studentService.delete(id);
-        return student != null ? ResponseEntity.ok(student) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        Student student = studentService.read(id).get();
+        try {
+            studentService.delete(id);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(student);
     }
 
     @GetMapping("/getall")
-    public Map<Long, Student> getAll() {
+    public List<Student> getAll() {
         return studentService.getAll();
     }
+
     @GetMapping("/age")
-    public Collection<Student> findForAge( @RequestParam ("age") int age ){
-       return studentService.findForAge(age);
+    public Collection<Student> findForAge(@RequestParam("age") int age) {
+        return studentService.findForAge(age);
     }
 }

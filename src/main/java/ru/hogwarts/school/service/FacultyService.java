@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Scope("singleton")
@@ -39,7 +40,10 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
     public Collection<Faculty> findForColor(String color){
+      return   getAll().stream()
+                .filter(faculty -> faculty.getColor().equals(color))
+                .toList();
 
-       return facultyRepository.findAll(Sort.by(color));
+//       return facultyRepository.findAll(Sort.by(color));
     }
 }
