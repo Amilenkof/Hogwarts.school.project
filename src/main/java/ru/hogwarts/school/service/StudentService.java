@@ -53,4 +53,14 @@ public class StudentService {
         return studentRepository.findByAgeBetween(min, max);
     }
 
-}
+    public Faculty findFacultyByStudent( Long id) {
+        try {
+
+            return studentRepository.findStudentById(id).getFaculty();
+        }catch (NullPointerException e){
+            return null;
+        }
+        }
+    }
+
+
