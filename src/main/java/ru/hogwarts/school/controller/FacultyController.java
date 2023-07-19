@@ -67,4 +67,13 @@ public class FacultyController {
     public Collection<Faculty> findForAge(@RequestParam ("color") String color ){
         return facultyService.findForColor(color);
     }
+    @GetMapping("/findByColorIgnoreCase")
+    public ResponseEntity<Faculty> findByColorIgnoreCase(@RequestParam String color){
+        Faculty result = facultyService.findByColorIgnoreCase(color);
+        if (result==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok( facultyService.findByColorIgnoreCase(color));
+    }
+
 }
