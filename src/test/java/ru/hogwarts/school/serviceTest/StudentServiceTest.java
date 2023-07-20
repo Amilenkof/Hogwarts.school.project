@@ -28,6 +28,8 @@ public class StudentServiceTest {
     private StudentService studentService;
     private final Student student = new Student(1L, "test", 11);
     private final Student student2 = new Student(2L, "test1", 12);
+    private final Student student33 = new Student(3L, "test2", 22);
+
 
     @Test
     public void createMethodTests() {
@@ -82,5 +84,24 @@ public class StudentServiceTest {
         assertThat(studentService.findForAge(100500).equals(new ArrayList<>()));
 
     }
+    @Test
+    public void findByAgeBetweenMethodTest(){
+        List<Student> list = new ArrayList<>();
+        list.add(student);
+        list.add(student2);
+
+        when(studentRepository.findByAgeBetween(10, 14)).thenReturn(list);
+        assertThat(studentService.findByAgeBetween(10, 14).equals(list));
+    }
+    @Test
+    public void findAllStudensByFacultyMethodTest(){
+        List<Student> list = new ArrayList<>();
+        list.add(student);
+        list.add(student2);
+
+        when(studentRepository.findByFaculty_Id(1L)).thenReturn(list);
+        assertThat(studentService.findAllStudensByFaculty(1L).equals(list));
+    }
 
 }
+

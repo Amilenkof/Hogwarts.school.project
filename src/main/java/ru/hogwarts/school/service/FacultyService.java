@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.*;
@@ -44,9 +45,16 @@ public class FacultyService {
                 .filter(faculty -> faculty.getColor().equals(color))
                 .toList();
 
-//       return facultyRepository.findAll(Sort.by(color));
+
     }
     public Faculty findByColorIgnoreCase(String color) {
         return facultyRepository.findByColorIgnoreCase(color);
     }
+    public Faculty findByNameIgnoreCase(String name) {
+        return facultyRepository.findByNameIgnoreCase(name);
+    }
+    public  Faculty findByStudent (Long id) {
+        return facultyRepository.findByStudents_id(id);
+    }
+
 }

@@ -3,6 +3,7 @@ package ru.hogwarts.school.model;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name="faculty")
@@ -14,7 +15,7 @@ public class Faculty {
     private String name;
     private String color;
     @OneToMany(mappedBy = "faculty")
-    private Collection<Student> students;
+    private List<Student> students;
 
 
     public Faculty(Long id, String name, String color) {
@@ -50,6 +51,8 @@ public class Faculty {
     public void setColor(String color) {
         this.color = color;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
