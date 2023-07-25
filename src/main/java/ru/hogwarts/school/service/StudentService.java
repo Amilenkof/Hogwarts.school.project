@@ -49,13 +49,15 @@ public class StudentService {
                 .filter(student -> student.getAge() == age)
                 .toList();
     }
-    public Collection<Student> findByAgeBetween(int min ,int max){
+
+    public Collection<Student> findByAgeBetween(int min, int max) {
         return studentRepository.findByAgeBetween(min, max);
     }
-    public  List<Student> findAllStudensByFaculty (Long id) {
+
+    public List<Student> findAllStudensByFaculty(Long id) {
         return studentRepository.findByFaculty_Id(id);
     }
 
-    }
+}
 
 
