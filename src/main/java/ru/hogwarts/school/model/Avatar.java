@@ -1,6 +1,7 @@
 package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 
 import javax.annotation.processing.Generated;
@@ -16,6 +17,7 @@ public class Avatar {
     private long fileSize;
     private String mediaType;
 //    @Lob
+//    @Type("org.")
     private byte[] data;
     @OneToOne
     private Student student;

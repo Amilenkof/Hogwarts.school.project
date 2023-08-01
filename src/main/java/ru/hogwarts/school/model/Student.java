@@ -2,10 +2,12 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class Student {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private int age;
@@ -55,5 +57,25 @@ public class Student {
         this.age = age;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Student student)) return false;
+        return getAge() == student.getAge() && Objects.equals(getId(), student.getId()) && Objects.equals(getName(), student.getName()) && Objects.equals(getFaculty(), student.getFaculty());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getAge(), getFaculty());
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", age=" + age +
+               ", faculty=" + faculty +
+               '}';
+    }
 }

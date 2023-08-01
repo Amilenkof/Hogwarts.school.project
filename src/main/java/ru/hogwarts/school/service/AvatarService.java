@@ -10,11 +10,15 @@ import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -63,11 +67,37 @@ public class AvatarService {
     }
 
 
-    private String getExtensions(String s) {
+    public String getExtensions(String s) {
         return s.substring(s.lastIndexOf(".") + 1);
     }
 
     public Avatar findAvatarByStudentId(Long studentId) {
         return avatarRepository.findAvatarByStudent_Id(studentId).orElseThrow(() -> new AvatarNotFoundException("Аватар с указанным id не найден"));
+    }
+
+    public void downloadFromInternet(Long studentId, String urlToFile) throws URISyntaxException, IOException {
+        Optional<Student> optionalStudent = studentService.read(studentId);
+        Optional<Avatar> optionalAvatar = avatarRepository.findAvatarByStudent_Id(studentId);
+        if(optionalStudent.isEmpty()) {
+            throw new StudentNotFoundException("Указанный студент не найден");
+        }
+        Student student = optionalStudent.get();
+        Avatar avatar = optionalAvatar.orElse(new Avatar());
+        File file = new File(urlToFile);
+
+//getExtensions(file.getOriginalFilename()) ---???
+        Path pathToLocal = Path.of(pathAdress, studentId + ".jpg"); //создаем путь к нему (2 параметра 1-папка где лежит будет создан файл, 2 как называть новый файл) , строка из проперти,
+        // указывает в какую папку создаем директорию, потом получаем расширение файла и склеиваем его с id- чтобы было уникальное значение
+
+        Files.createDirectories(pathToLocal.getParent());//проверяем есть ли папки по адресу ( в проперти  @Value("${path.to.avatars.folder}") private String pathAdress;) если нет он их создаст
+        Files.deleteIfExists(pathToLocal);//проверяем есть ли уже такой файл, если есть удаляем
+        try (  InputStream inputStream = Files.newInputStream(file.toPath());
+               OutputStream outputStream = Files.newOutputStream(pathToLocal);) {
+        }avatar.setFilePath(pathToLocal.toString());
+        avatar.setStudent(student);
+
+
+
+
     }
 }

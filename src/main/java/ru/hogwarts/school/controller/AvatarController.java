@@ -14,6 +14,7 @@ import ru.hogwarts.school.service.AvatarService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -27,7 +28,7 @@ public class AvatarController {
     }
 
 
-    @PostMapping(value = "/{studentId}/avatars", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{studentId}/download-avatar-from-disk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
         if (avatar.getSize() > 1024 * 500) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -64,6 +65,12 @@ public class AvatarController {
         }
 
 
+    }
+
+    @PostMapping("/{studentId}/download-avatar-from-internet")
+            public void downloadAvatarFromInternet (@PathVariable Long studentId,
+                                                    @RequestParam String URLToFile) throws URISyntaxException, IOException {
+        avatarService.downloadFromInternet(studentId, URLToFile);
     }
 
 }

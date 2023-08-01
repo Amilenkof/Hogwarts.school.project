@@ -1,8 +1,7 @@
 package ru.hogwarts.school.repository;
 
-import org.apache.catalina.LifecycleState;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.hogwarts.school.model.Faculty;
+import org.springframework.data.jpa.repository.Query;
 import ru.hogwarts.school.model.Student;
 
 import java.util.Collection;
@@ -14,6 +13,9 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
 
     List<Student> findByFaculty_Id(Long id);
 
-//    Student findStudentById(Long id);
+    //    Student findStudentById(Long id);
+    @Query(value = "select id from student order by id desc limit 1;",nativeQuery = true)
+    Long findLastID();
 
+    Student findStudentById(Long id);
 }
