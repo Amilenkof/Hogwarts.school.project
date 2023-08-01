@@ -48,15 +48,6 @@ public class StudentController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-//        @DeleteMapping("{id}")
-//    public ResponseEntity<Faculty> delete(@PathVariable Long id) {
-//        try {
-//            facultyService.delete(id);
-//        } catch (IllegalArgumentException e) {
-//         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        return ResponseEntity.ok().build();
-//    }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Student> delete(@PathVariable Long id) {
