@@ -16,6 +16,8 @@ public interface FacultyRepository extends JpaRepository<Faculty,Long> {
     Faculty findByNameIgnoreCase(String name);
 
     Faculty findByStudents_id(Long id);
+    @Query(value = "select id from faculty order by id desc limit 1;",nativeQuery = true)
+    Long findLastID();
 
 
 

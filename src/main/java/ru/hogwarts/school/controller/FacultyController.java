@@ -65,7 +65,7 @@ public class FacultyController {
         return facultyService.getAll();
     }
     @GetMapping("/color")
-    public Collection<Faculty> findForAge(@RequestParam ("color") String color ){
+    public Collection<Faculty> findForColor (@RequestParam ("color") String color ){
         return facultyService.findForColor(color);
     }
     @GetMapping("/findByColorIgnoreCase")
