@@ -3,49 +3,62 @@ package ru.hogwarts.school.service;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Scope("singleton")
 public class StudentService {
-    private final Map<Long, Student> repository;
+    private final StudentRepository studentRepository;
 
-    private static Long counter = 0L;
-
-
-    public StudentService() {
-        this.repository = new HashMap<>();
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
+
 
     public Student create(Student student) {
-        counter++;
-        student.setId(counter);
-        return repository.put(counter, student);
-
+        return studentRepository.save(student);
     }
 
-    public Student read(Long id) {
-        return repository.get(id);
+    public Optional<Student> read(Long id) {
+        return studentRepository.findById(id);
     }
 
     public Student update(Student student) {
-        return repository.put(student.getId(), student);
+        return studentRepository.save(student);
     }
 
-    public Student delete(Long id) {
-        return repository.remove(id);
-    }
-    public Map<Long,Student> getAll(){
-        return repository;
+    public void delete(Long id) {
+        studentRepository.deleteById(id);
     }
 
-    public Collection <Student> findForAge(int age){
-       return repository.values().stream()
+    public List<Student> getAll() {
+        return studentRepository.findAll();
+    }
+
+
+    public Collection<Student> findForAge(int age) {
+        return getAll().stream()
                 .filter(student -> student.getAge() == age)
                 .toList();
     }
+
+    public Collection<Student> findByAgeBetween(int min, int max) {
+        return studentRepository.findByAgeBetween(min, max);
+    }
+
+    public List<Student> findAllStudensByFaculty(Long id) {
+        return studentRepository.findByFaculty_Id(id);
+    }
+    public Long findLastID(){
+       return studentRepository.findLastID();
+    }
+    public Student findStudentByID(Long id){
+     return    studentRepository.findStudentById(id);
+    }
 }
+
+

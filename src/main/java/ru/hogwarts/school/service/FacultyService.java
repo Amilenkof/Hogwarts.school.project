@@ -1,48 +1,69 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @Scope("singleton")
 public class FacultyService {
-    private final Map<Long, Faculty> repository;
+    private final FacultyRepository facultyRepository;
 
-    private static Long counter = 0L;
-
-
-    public FacultyService() {
-        this.repository = new HashMap<>();
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
+
 
     public Faculty create(Faculty faculty) {
-        counter++;
-        faculty.setId(counter);
-        return repository.put(counter, faculty);
+        return facultyRepository.save(faculty);
 
     }
 
-    public Faculty read(Long id) {
-        return repository.get(id);
+    public Optional<Faculty> read(Long id) {
+        return facultyRepository.findById(id);
     }
 
     public Faculty update(Faculty faculty) {
-        return repository.put(faculty.getId(), faculty);
+        return facultyRepository.save(faculty);
     }
 
-    public Faculty delete(Long id) {
-        return repository.remove(id);
+    public void delete(Long id) {
+        facultyRepository.deleteById(id);
     }
-    public Map<Long,Faculty> getAll(){
-        return repository;
+
+    public List<Faculty> getAll() {
+        return facultyRepository.findAll();
     }
-    public Collection<Faculty> findForColor(String color){
-        return repository.values().stream()
+
+    public Collection<Faculty> findForColor(String color) {
+        return getAll().stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .toList();
+
+
     }
+
+    public Faculty findByColorIgnoreCase(String color) {
+        return facultyRepository.findByColorIgnoreCase(color);
+    }
+
+    public Faculty findByNameIgnoreCase(String name) {
+        return facultyRepository.findByNameIgnoreCase(name);
+    }
+
+    public Faculty findByStudent(Long id) {
+        return facultyRepository.findByStudents_id(id);
+    }
+
+    public Long findLastID (){
+        return facultyRepository.findLastID();
+    }
+
+
 }

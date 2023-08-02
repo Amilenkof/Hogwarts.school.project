@@ -9,7 +9,9 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
@@ -31,9 +33,9 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> read(@PathVariable Long id) {
-        Faculty faculty = facultyService.read(id);
-        if (faculty != null) {
+    public ResponseEntity<Optional<Faculty>> read(@PathVariable Long id) {
+        Optional<Faculty> faculty = facultyService.read(id);
+        if (faculty.isPresent()) {
             return ResponseEntity.ok(faculty);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -50,15 +52,43 @@ public class FacultyController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> delete(@PathVariable Long id) {
-        Faculty faculty = facultyService.delete(id);
-        return faculty != null ? ResponseEntity.ok(faculty) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        Faculty faculty = facultyService.read(id).get();
+        try {
+            facultyService.delete(id);
+        } catch (IllegalArgumentException e) {
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(faculty);
     }
     @GetMapping("/getall")
-    public Map<Long,Faculty> getAll (){
+    public List<Faculty> getAll (){
         return facultyService.getAll();
     }
     @GetMapping("/color")
-    public Collection<Faculty> findForAge(@RequestParam ("color") String color ){
+    public Collection<Faculty> findForColor (@RequestParam ("color") String color ){
         return facultyService.findForColor(color);
     }
+    @GetMapping("/findByColorIgnoreCase")
+    public ResponseEntity<Faculty> findByColorIgnoreCase(@RequestParam String color){
+        Faculty result = facultyService.findByColorIgnoreCase(color);
+        if (result==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok( facultyService.findByColorIgnoreCase(color));
+    }
+    @GetMapping("/findByNameIgnoreCase")
+    public ResponseEntity<Faculty> findByNameIgnoreCase(@RequestParam String name){
+        Faculty result = facultyService.findByNameIgnoreCase(name);
+        if (result==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok( facultyService.findByNameIgnoreCase(name));
+    }
+
+    @GetMapping("/findByStudentId")
+    public ResponseEntity<Faculty> findByStudent (@RequestParam Long id) {
+        Faculty result = facultyService.findByStudent(id);
+        return result == null ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok(result);
+    }
+
 }
