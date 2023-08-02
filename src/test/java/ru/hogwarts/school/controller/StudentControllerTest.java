@@ -147,11 +147,6 @@ public class StudentControllerTest {
         System.out.println("equals = " + equals);
         Assertions.assertThat(equals).isTrue();
         testRestTemplate.delete("http://localhost:" + port + "/student/" + lastID);
-//        'http://localhost:"+port+"/student/findByAgeBetween?min=190&max=220
+
     }
 }
-//    @GetMapping("/findByAgeBetween")
-//    public Collection<Student> findByAgeBetween(@RequestParam int min,
-//                                                @RequestParam int max){
-//        return studentService.findByAgeBetween(min, max);
-//    }
