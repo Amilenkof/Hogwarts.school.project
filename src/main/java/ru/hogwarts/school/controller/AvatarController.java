@@ -1,6 +1,7 @@
 package ru.hogwarts.school.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("student/avatar")
@@ -40,7 +42,7 @@ public class AvatarController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/{studentId}/getAvatar-from-db")
+    @GetMapping("/{studentId}/getAvatarFromDb")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
         Avatar avatar = avatarService.findAvatarByStudentId(studentId);
         HttpHeaders headers = new HttpHeaders();
@@ -50,7 +52,7 @@ public class AvatarController {
 
     }
 
-    @GetMapping("/{studentId}/getAvatar-from-disc")
+    @GetMapping("/{studentId}/getAvatarFromDisc")
     public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
 
         Avatar avatar = avatarService.findAvatarByStudentId(studentId);
@@ -62,8 +64,13 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             inputStream.transferTo(outputStream);
         }
-
-
     }
+    @GetMapping("/getAllAvatars")
+    public List<Avatar> getAllAvatars(@RequestParam ("page") int page,
+                                      @RequestParam ("size") int size){
+
+        return ResponseEntity.ok(avatarService.getAllAvatars(page,size)).getBody();
+    }
+
 
 }

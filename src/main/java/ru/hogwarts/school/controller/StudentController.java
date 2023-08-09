@@ -78,5 +78,17 @@ public class StudentController {
     public List <Student>  findAllStudensByFaculty (@RequestParam Long id) {
         return studentService.findAllStudensByFaculty(id);
     }
+    @GetMapping("/getCountStudents")
+    public int getCountStudents(){
+        return studentService.countStudents();
+    }
+    @GetMapping("/getAgeAverage")
+    public double getAgeAverage(){
+        return studentService.getAgeAverage();
+    }
+    @GetMapping("/getFiveLastStudents")
+    public List<Student> getFiveLastStudents(){
+        return studentService.getFiveLastStudents();
+    }
 
 }

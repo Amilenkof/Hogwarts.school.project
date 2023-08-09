@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.exeption.AvatarNotFoundException;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -37,7 +39,7 @@ public class AvatarService {
 
 
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
-        Student student = studentService.read(studentId).orElseThrow(()->new StudentNotFoundException("Указанный студент не найден"));//находим студента с указанным id
+        Student student = studentService.read(studentId).orElseThrow(() -> new StudentNotFoundException("Указанный студент не найден"));//находим студента с указанным id
 
         Path path = Path.of(pathAdress, studentId + "." + getExtensions(avatarFile.getOriginalFilename())); //создаем путь к нему (2 параметра 1-папка где лежит будет создан файл, 2 как называть новый файл) , строка из проперти,
         // указывает в какую папку создаем директорию, потом получаем расширение файла и склеиваем его с id- чтобы было уникальное значение
@@ -69,5 +71,12 @@ public class AvatarService {
 
     public Avatar findAvatarByStudentId(Long studentId) {
         return avatarRepository.findAvatarByStudent_Id(studentId).orElseThrow(() -> new AvatarNotFoundException("Аватар с указанным id не найден"));
+    }
+
+    public List<Avatar> getAllAvatars(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return avatarRepository.findAll(pageRequest).getContent();
+//        return allAvatars.stream().map(Avatar::getData).toList();
+
     }
 }
