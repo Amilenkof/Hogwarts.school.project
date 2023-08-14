@@ -12,11 +12,15 @@ import ru.hogwarts.school.exeption.StudentNotFoundException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -65,11 +69,26 @@ public class AvatarController {
             inputStream.transferTo(outputStream);
         }
     }
-    @GetMapping("/getAllAvatars")
-    public List<Avatar> getAllAvatars(@RequestParam ("page") int page,
-                                      @RequestParam ("size") int size){
 
-        return ResponseEntity.ok(avatarService.getAllAvatars(page,size)).getBody();
+    @GetMapping("/getAllAvatars")
+    public List<BufferedImage> getAllAvatars(@RequestParam("page") int page,
+                                      @RequestParam("size") int size,
+                                      HttpServletResponse response) throws IOException {
+        List<Avatar> allAvatars = avatarService.getAllAvatars(page, size);
+        boolean flag = false;
+        List<BufferedImage> imageList = new ArrayList<>();
+        for (Avatar avatar : allAvatars) {
+            try (InputStream inputStream = new ByteArrayInputStream(avatar.getData());
+                 OutputStream outputStream = response.getOutputStream();) {
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(avatar.getData()));
+                imageList.add(img);
+//                response.setStatus(200);
+//                response.setContentType(avatar.getMediaType());
+//                response.setContentLength((int) avatar.getFileSize());
+//                inputStream.transferTo(outputStream);
+            }
+        }
+        return imageList;
     }
 
 
