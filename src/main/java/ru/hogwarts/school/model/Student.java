@@ -37,10 +37,6 @@ public class Student {
         return name;
     }
 
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -49,12 +45,16 @@ public class Student {
         return age;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
 
