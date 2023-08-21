@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exeption.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -18,6 +19,7 @@ public class FacultyService {
     private final FacultyRepository facultyRepository;
     private final Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
+
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
@@ -29,18 +31,18 @@ public class FacultyService {
     }
 
     public Optional<Faculty> read(Long id) {
-        logger.info("Was invoked method for read faculty with id={}",id );
+        logger.info("Was invoked method for read faculty with id={}", id);
         return facultyRepository.findById(id);
     }
 
     public Faculty update(Faculty faculty) {
-        logger.info("Was invoked method for update faculty {}",faculty );
+        logger.info("Was invoked method for update faculty {}", faculty);
 
         return facultyRepository.save(faculty);
     }
 
     public void delete(Long id) {
-        logger.info("Was invoked method for delete faculty with id= {}",id );
+        logger.info("Was invoked method for delete faculty with id= {}", id);
 
         facultyRepository.deleteById(id);
     }
@@ -51,7 +53,7 @@ public class FacultyService {
     }
 
     public Collection<Faculty> findForColor(String color) {
-        logger.info("Was invoked method  for find all faculty with color={}",color);
+        logger.info("Was invoked method  for find all faculty with color={}", color);
         logger.warn("This method can return empty result");
 
         return getAll().stream()
@@ -62,22 +64,33 @@ public class FacultyService {
     }
 
     public Faculty findByColorIgnoreCase(String color) {
-        logger.info("Was invoked method  for find any faculty with color={}",color);
+        logger.info("Was invoked method  for find any faculty with color={}", color);
 
 
         return facultyRepository.findByColorIgnoreCase(color);
     }
 
     public Faculty findByNameIgnoreCase(String name) {
-        logger.info("Was invoked method  for find any faculty with name={}",name);
+        logger.info("Was invoked method  for find any faculty with name={}", name);
 
         return facultyRepository.findByNameIgnoreCase(name);
     }
 
     public Faculty findByStudent(Long id) {
-        logger.info("Was invoked method  for find  faculty for student with id ={}",id);
+        logger.info("Was invoked method  for find  faculty for student with id ={}", id);
 
         return facultyRepository.findByStudents_id(id);
     }
 
+    public String getLongestNameOfFaculty() {
+        logger.info("Was invoked getLongestNameOfFaculty method");
+        List<Faculty> facultyList = facultyRepository.findAll();
+        if (facultyList.isEmpty()) {
+            logger.error("facultyList is empty");
+        }
+        return facultyList.stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElseThrow(() -> new FacultyNotFoundException("List of faculty is empty"));
+    }
 }

@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.exeption.StudentNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
@@ -79,16 +80,24 @@ public class StudentController {
         return studentService.findAllStudensByFaculty(id);
     }
     @GetMapping("/getCountStudents")
-    public int getCountStudents(){
-        return studentService.countStudents();
+    public ResponseEntity<Integer> getCountStudents(){
+        return ResponseEntity.ok(studentService.countStudents());
     }
     @GetMapping("/getAgeAverage")
-    public double getAgeAverage(){
-        return studentService.getAgeAverage();
+    public ResponseEntity<Double> getAgeAverage(){
+        return ResponseEntity.ok(studentService.getAgeAverage());
     }
     @GetMapping("/getFiveLastStudents")
-    public List<Student> getFiveLastStudents(){
-        return studentService.getFiveLastStudents();
+    public ResponseEntity<List<Student>> getFiveLastStudents(){
+        return ResponseEntity.ok(studentService.getFiveLastStudents());
+    }
+    @GetMapping("/getAllStudentsWithNameStartsOnA")
+    public ResponseEntity<List<String>> getAllStudentsWithNameStartsOnA (){
+        return ResponseEntity.ok(studentService.getAllStudentsWithNameStartsOnA());
+    }
+    @GetMapping("/getAgeAverageStream")
+    public ResponseEntity<Double> getAgeAverageStream (){
+        return ResponseEntity.ok(studentService.getAgeAverageStream());
     }
 
 }

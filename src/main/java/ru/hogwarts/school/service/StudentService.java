@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exeption.StudentNotFoundException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -49,38 +50,61 @@ public class StudentService {
 
 
     public Collection<Student> findForAge(int age) {
-        logger.info("Was invoked method for find student with age={}",age);
+        logger.info("Was invoked method for find student with age={}", age);
         return getAll().stream()
                 .filter(student -> student.getAge() == age)
                 .toList();
     }
 
     public Collection<Student> findByAgeBetween(int min, int max) {
-        logger.info("Was invoked method for find all students with age between{} and {}",min,max);
+        logger.info("Was invoked method for find all students with age between{} and {}", min, max);
         logger.warn("This method can return empty result");
         return studentRepository.findByAgeBetween(min, max);
     }
 
     public List<Student> findAllStudensByFaculty(Long id) {
-        logger.info("Was invoked method for find all students on faculty with id={}",id );
+        logger.info("Was invoked method for find all students on faculty with id={}", id);
         return studentRepository.findByFaculty_Id(id);
     }
 
     public int countStudents() {
-        logger.info("Was invoked method for counting all students" );
+        logger.info("Was invoked method for counting all students");
         return studentRepository.getCountStudents();
     }
-    public double getAgeAverage (){
-        logger.info("Was invoked method for calculating average age about all students" );
+
+    public double getAgeAverage() {
+        logger.info("Was invoked method for calculating average age about all students");
 
         return studentRepository.getAgeAverage();
     }
-    public List<Student> getFiveLastStudents(){
-        logger.info("Was invoked method for find 5 last students" );
+
+    public List<Student> getFiveLastStudents() {
+        logger.info("Was invoked method for find 5 last students");
 
         return studentRepository.getFiveLastStudents();
     }
 
+    public List<String> getAllStudentsWithNameStartsOnA() {
+        logger.info("Was invoked method getAllStudentsWithNameStartsOnA");
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .filter(s -> s.startsWith("A"))
+                .sorted()
+                .toList();
+    }
+
+    public double getAgeAverageStream() {
+        logger.info("Was invoked method getAgeAverageStream");
+        List<Student> studentList = studentRepository.findAll();
+        if (studentList.isEmpty()){
+            logger.error("studentList is empty");
+        }
+        return studentList.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElseThrow(() -> new StudentNotFoundException("List of students is empty"));
+    }
 }
 
 

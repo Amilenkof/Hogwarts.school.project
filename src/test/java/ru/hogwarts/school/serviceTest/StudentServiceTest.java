@@ -35,7 +35,7 @@ public class StudentServiceTest {
     public void createMethodTests() {
 
         when(studentRepository.save(student)).thenReturn(student);
-        assertThat(studentService.create(student).equals(student));
+        assertThat(studentService.create(student).equals(student)).isTrue();
 
 
 
@@ -45,13 +45,13 @@ public class StudentServiceTest {
     public void readMethodTest() {
         Optional<Student> optional = Optional.of(student);
         when(studentRepository.findById(1L)).thenReturn(optional);
-        assertThat(studentService.read(1L).equals(optional));
+        assertThat(studentService.read(1L).equals(optional)).isTrue();
     }
     @Test
     public void negativeReadMethodTest(){
         Optional<Student> optional = Optional.empty();
         when(studentRepository.findById(1L)).thenReturn(optional);
-        assertThat(studentService.read(1L).equals(Optional.empty()));
+        assertThat(studentService.read(1L).equals(Optional.empty())).isTrue();
 
     }
 
@@ -64,12 +64,12 @@ public class StudentServiceTest {
     @Test
     public void getallMethodTest() {
         List<Student> list=new ArrayList<>();
-        assertThat(studentService.getAll().size() == 0);
-        assertThat(studentService.getAll().equals(list));
+        assertThat(studentService.getAll().size() == 0).isTrue();
+        assertThat(studentService.getAll().equals(list)).isTrue();
         list.add(student);
         when(studentService.getAll()).thenReturn(list);
-        assertThat(studentService.getAll().equals(list));
-        assertThat(studentService.getAll().size() == 1);
+        assertThat(studentService.getAll().equals(list)).isTrue();
+        assertThat(studentService.getAll().size() == 1).isTrue();
 
     }
     @Test
@@ -80,8 +80,8 @@ public class StudentServiceTest {
         when(studentService.getAll()).thenReturn(list);
         List<Student> result = new ArrayList<>();
         result.add(student);
-        assertThat(studentService.findForAge(11).equals(result));
-        assertThat(studentService.findForAge(100500).equals(new ArrayList<>()));
+        assertThat(studentService.findForAge(11).equals(result)).isTrue();
+        assertThat(studentService.findForAge(100500).equals(new ArrayList<>())).isTrue();
 
     }
     @Test
@@ -91,7 +91,7 @@ public class StudentServiceTest {
         list.add(student2);
 
         when(studentRepository.findByAgeBetween(10, 14)).thenReturn(list);
-        assertThat(studentService.findByAgeBetween(10, 14).equals(list));
+        assertThat(studentService.findByAgeBetween(10, 14).equals(list)).isTrue();
     }
     @Test
     public void findAllStudensByFacultyMethodTest(){
@@ -100,8 +100,29 @@ public class StudentServiceTest {
         list.add(student2);
 
         when(studentRepository.findByFaculty_Id(1L)).thenReturn(list);
-        assertThat(studentService.findAllStudensByFaculty(1L).equals(list));
+        assertThat(studentService.findAllStudensByFaculty(1L).equals(list)).isTrue();
     }
-
+    @Test
+    public void getAgeAverageStreamMethodTest(){
+        List<Student> list = new ArrayList<>();
+        list.add(student);
+        list.add(student2);
+        list.add(student33);
+        when(studentRepository.findAll()).thenReturn(list);
+        double actual = studentService.getAgeAverageStream();
+        assertThat((int) actual == 15).isTrue();
+    }
+    @Test
+    public void getAllStudentsWithNameStartsOnA(){
+        List<Student> list = new ArrayList<>();
+        list.add(student);
+        list.add(student2);
+        list.add(student33);
+        list.add(new Student(111L, "Alex", 12));
+        list.add(new Student(113L, "Axel", 12));
+        when(studentRepository.findAll()).thenReturn(list);
+        List<String> expected = List.of("ALEX", "AXEL");
+        List<String> actual = studentService.getAllStudentsWithNameStartsOnA();
+        assertThat(expected.containsAll(actual)).isTrue();
+    }
 }
-

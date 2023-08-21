@@ -85,6 +85,11 @@ public class FacultyController {
         return ResponseEntity.ok( facultyService.findByNameIgnoreCase(name));
     }
 
+    @GetMapping("/getLongestNameOfFaculty")
+    public ResponseEntity<String> getLongestNameOfFaculty(){
+        return ResponseEntity.ok(facultyService.getLongestNameOfFaculty());
+    }
+
     @GetMapping("/findByStudentId")
     public ResponseEntity<Faculty> findByStudent (@RequestParam Long id) {
         Faculty result = facultyService.findByStudent(id);
