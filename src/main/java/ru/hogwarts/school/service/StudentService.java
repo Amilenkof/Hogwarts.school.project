@@ -18,6 +18,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
+
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -97,13 +98,66 @@ public class StudentService {
     public double getAgeAverageStream() {
         logger.info("Was invoked method getAgeAverageStream");
         List<Student> studentList = studentRepository.findAll();
-        if (studentList.isEmpty()){
+        if (studentList.isEmpty()) {
             logger.error("studentList is empty");
         }
         return studentList.stream()
                 .mapToInt(Student::getAge)
                 .average()
                 .orElseThrow(() -> new StudentNotFoundException("List of students is empty"));
+    }
+
+    //**Шаг 1**
+//
+//Создать эндпоинт для студентов (с любым url), который запускает метод сервиса (с любым названием).
+// В методе сервиса необходимо получить список всех студентов и вывести их имена в консоль используя команду
+// System.out.println(). При этом первые два имени вывести в основном потоке, второе и третье в параллельном потоке.
+// А пятое и шестое во втором параллельном потоке. В итоге в консоли должен появиться список из шести имен в порядке,
+// отличном от порядка в коллекции.
+    public void printStudentsMultyThread() {
+        List<String> names = getAll().stream().map(Student::getName).toList();
+        System.out.println("names = " + names);
+        printNextStudentName(names.get(0), names.get(1));
+        Thread threadOne = new Thread(() -> {
+            printNextStudentName(names.get(2));
+            printNextStudentName(names.get(3));
+        });
+        Thread threadTwo = new Thread(() -> {
+            printNextStudentName(names.get(4));
+            printNextStudentName(names.get(5));
+        });
+        threadOne.start();
+        threadTwo.start();
+    }
+
+    private void printNextStudentName(String... strings) {
+        for (String string : strings) {
+            System.out.println(Thread.currentThread().getName() + " " + string);
+        }
+    }
+//**Шаг 2**
+//
+//Создать еще один эндпоинт и метод в сервисе. Но теперь вывод имени в консоль вынести в отдельный синхронизированный метод.
+// И так же запустить печать в консоль первых двух имен в основном потоке, третьего и четвертого в параллельном потоке,
+// четвертого и пятого во втором параллельном потоке.
+//В итоге в консоли должен находиться список из имен в том же порядке, что и в коллекции.
+    private synchronized void printNextStudentsNameSinchronized(String ... strings) {
+        printNextStudentName(strings);
+    }
+
+
+    public void printStudentsMultyThreadSinhronized() {
+        List<String> names = getAll().stream().map(Student::getName).toList();
+        System.out.println("names = " + names);
+        printNextStudentsNameSinchronized(names.get(0),names.get(1));
+        Thread threadOne = new Thread(() -> {
+            printNextStudentsNameSinchronized(names.get(2),names.get(3));
+        });
+        Thread threadTwo = new Thread(() -> {
+            printNextStudentsNameSinchronized(names.get(4),names.get(5));
+        });
+        threadOne.start();
+        threadTwo.start();
     }
 }
 

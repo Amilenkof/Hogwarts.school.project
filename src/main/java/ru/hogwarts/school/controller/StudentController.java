@@ -99,5 +99,13 @@ public class StudentController {
     public ResponseEntity<Double> getAgeAverageStream (){
         return ResponseEntity.ok(studentService.getAgeAverageStream());
     }
+    @GetMapping("/printStudentsMultyThread")
+    public void printStudentsMultyThread (){
+        studentService.printStudentsMultyThread();
+    }
+    @GetMapping("/printStudentsMultyThreadSinhronized")
+    public void printStudentsMultyThreadSinhronized (){
+        studentService.printStudentsMultyThreadSinhronized();
+    }
 
 }
